@@ -284,7 +284,7 @@ class RoomInfoView extends React.Component {
 				<SafeAreaView style={styles.container} testID='room-info-view' forceInset={{ vertical: 'never' }}>
 					<View style={styles.avatarContainer}>
 						{this.renderAvatar(room, roomUser)}
-						<View style={styles.roomTitleContainer}>{ getRoomTitle(room, this.t, roomUser && roomUser.name) }</View>
+						<View style={styles.roomTitleContainer}>{ getRoomTitle(room, this.t, roomUser && (roomUser.name || roomUser.username || 'Unnamed')) }</View>
 					</View>
 					{this.isDirect() ? this.renderDirect() : this.renderChannel()}
 				</SafeAreaView>
