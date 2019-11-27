@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import { constants } from 'react-native-keycommands';
+import { constants } from 'react-native-keycommands/src';
 
 import I18n from './i18n';
 
