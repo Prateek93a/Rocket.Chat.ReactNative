@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import PropTypes from 'prop-types';
-<<<<<<< HEAD
 // import { ScrollView, Dimensions, View } from 'react-native';
 // import ScrollableTabView from 'react-native-scrollable-tab-view';
-=======
-import ScrollableTabView from 'react-native-scrollable-tab-view';
->>>>>>> develop
 import { shortnameToUnicode } from 'emoji-toolkit';
 import equal from 'deep-equal';
 import { connect } from 'react-redux';
@@ -165,7 +160,6 @@ class EmojiPicker extends Component {
 			return null;
 		}
 		return (
-<<<<<<< HEAD
 			<TabViewComponent renderCategory={(category, i) => this.renderCategory(category, i)} tabEmojiStyle={tabEmojiStyle} />
 			// <ScrollableTabView
 			// 	renderTabBar={() => <TabBar tabEmojiStyle={tabEmojiStyle} />}
@@ -187,23 +181,6 @@ class EmojiPicker extends Component {
 			// 				)))
 			// 	}
 			// </ScrollableTabView>
-=======
-			<View onLayout={this.onLayout} style={{ flex: 1 }}>
-				<ScrollableTabView
-					renderTabBar={() => <TabBar tabEmojiStyle={tabEmojiStyle} />}
-					contentProps={scrollProps}
-					style={styles.background}
-				>
-					{
-						categories.tabs.map((tab, i) => (
-							(i === 0 && frequentlyUsed.length === 0) ? null // when no frequentlyUsed don't show the tab
-								: (
-									this.renderCategory(tab.category, i, tab.tabLabel)
-								)))
-					}
-				</ScrollableTabView>
-			</View>
->>>>>>> develop
 		);
 	}
 }
