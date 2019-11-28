@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-	View, StyleSheet, Text, Easing
+	View, StyleSheet, Text, Easing, Dimensions
 } from 'react-native';
 import Video from 'react-native-video';
-import Slider from 'react-native-slider';
+import Slider from '@react-native-community/slider';
 import moment from 'moment';
 import equal from 'deep-equal';
 import Touchable from 'react-native-platform-touchable';
@@ -13,6 +13,8 @@ import Markdown from '../markdown';
 import { CustomIcon } from '../../lib/Icons';
 import sharedStyles from '../../views/Styles';
 import { COLOR_BACKGROUND_CONTAINER, COLOR_BORDER, COLOR_PRIMARY } from '../../constants/colors';
+import { isAndroid, isIOS } from '../../utils/deviceInfo';
+import { withSplit } from '../../split';
 
 const styles = StyleSheet.create({
 	audioContainer: {
@@ -42,13 +44,6 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		...sharedStyles.textColorNormal,
 		...sharedStyles.textRegular
-	},
-	thumbStyle: {
-		width: 12,
-		height: 12
-	},
-	trackStyle: {
-		height: 2
 	}
 });
 
@@ -79,12 +74,13 @@ Button.propTypes = {
 };
 Button.displayName = 'MessageAudioButton';
 
-export default class Audio extends React.Component {
+class Audio extends React.Component {
 	static propTypes = {
 		file: PropTypes.object.isRequired,
 		baseUrl: PropTypes.string.isRequired,
 		user: PropTypes.object.isRequired,
 		useMarkdown: PropTypes.bool,
+		split: PropTypes.bool,
 		getCustomEmoji: PropTypes.func
 	}
 
@@ -103,7 +99,7 @@ export default class Audio extends React.Component {
 		const {
 			currentTime, duration, paused, uri
 		} = this.state;
-		const { file } = this.props;
+		const { file, split } = this.props;
 		if (nextState.currentTime !== currentTime) {
 			return true;
 		}
@@ -117,6 +113,9 @@ export default class Audio extends React.Component {
 			return true;
 		}
 		if (!equal(nextProps.file, file)) {
+			return true;
+		}
+		if (nextProps.split !== split) {
 			return true;
 		}
 		return false;
@@ -159,7 +158,7 @@ export default class Audio extends React.Component {
 			uri, paused, currentTime, duration
 		} = this.state;
 		const {
-			user, baseUrl, file, getCustomEmoji, useMarkdown
+			user, baseUrl, file, getCustomEmoji, useMarkdown, split
 		} = this.props;
 		const { description } = file;
 
@@ -169,7 +168,7 @@ export default class Audio extends React.Component {
 
 		return (
 			<>
-				<View style={styles.audioContainer}>
+				<View style={[styles.audioContainer, split && sharedStyles.tabletContent]}>
 					<Video
 						ref={this.setRef}
 						source={{ uri }}
@@ -187,11 +186,10 @@ export default class Audio extends React.Component {
 						minimumValue={0}
 						animateTransitions
 						animationConfig={sliderAnimationConfig}
-						thumbTintColor={COLOR_PRIMARY}
+						thumbTintColor={isAndroid && COLOR_PRIMARY}
 						minimumTrackTintColor={COLOR_PRIMARY}
 						onValueChange={this.onValueChange}
-						thumbStyle={styles.thumbStyle}
-						trackStyle={styles.trackStyle}
+						thumbImage={isIOS && { uri: 'audio_thumb', scale: Dimensions.get('window').scale }}
 					/>
 					<Text style={styles.duration}>{this.duration}</Text>
 				</View>
@@ -200,3 +198,5 @@ export default class Audio extends React.Component {
 		);
 	}
 }
+
+export default withSplit(Audio);

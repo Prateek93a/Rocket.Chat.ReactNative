@@ -3,7 +3,7 @@ import { Text, Image } from 'react-native';
 import { Parser, Node } from 'commonmark';
 import Renderer from 'commonmark-react-renderer';
 import PropTypes from 'prop-types';
-import { toShort, shortnameToUnicode } from 'emoji-toolkit';
+import { shortnameToUnicode } from 'emoji-toolkit';
 
 import I18n from '../../i18n';
 
@@ -32,13 +32,19 @@ const emojiRanges = [
 	' |\n' // allow spaces and line breaks
 ].join('|');
 
+const removeSpaces = str => str && str.replace(/\s/g, '');
+
 const removeAllEmoji = str => str.replace(new RegExp(emojiRanges, 'g'), '');
 
-const isOnlyEmoji = str => !removeAllEmoji(str).length;
+const isOnlyEmoji = (str) => {
+	str = removeSpaces(str);
+	return !removeAllEmoji(str).length;
+};
 
 const removeOneEmoji = str => str.replace(new RegExp(emojiRanges), '');
 
 const emojiCount = (str) => {
+	str = removeSpaces(str);
 	let oldLength = 0;
 	let counter = 0;
 
@@ -180,19 +186,25 @@ export default class Markdown extends PureComponent {
 		);
 	};
 
-	renderLink = ({ children, href }) => (
-		<MarkdownLink link={href}>
-			{children}
-		</MarkdownLink>
-	);
+	renderLink = ({ children, href }) => {
+		const { preview } = this.props;
+		return (
+			<MarkdownLink link={href} preview={preview}>
+				{children}
+			</MarkdownLink>
+		);
+	}
 
 	renderHashtag = ({ hashtag }) => {
-		const { channels, navToRoomInfo, style } = this.props;
+		const {
+			channels, navToRoomInfo, style, preview
+		} = this.props;
 		return (
 			<MarkdownHashtag
 				hashtag={hashtag}
 				channels={channels}
 				navToRoomInfo={navToRoomInfo}
+				preview={preview}
 				style={style}
 			/>
 		);
@@ -200,7 +212,7 @@ export default class Markdown extends PureComponent {
 
 	renderAtMention = ({ mentionName }) => {
 		const {
-			username, mentions, navToRoomInfo, style
+			username, mentions, navToRoomInfo, preview, style
 		} = this.props;
 		return (
 			<MarkdownAtMention
@@ -208,6 +220,7 @@ export default class Markdown extends PureComponent {
 				mention={mentionName}
 				username={username}
 				navToRoomInfo={navToRoomInfo}
+				preview={preview}
 				style={style}
 			/>
 		);
@@ -275,11 +288,17 @@ export default class Markdown extends PureComponent {
 		);
 	};
 
-	renderBlockQuote = ({ children }) => (
-		<MarkdownBlockQuote>
-			{children}
-		</MarkdownBlockQuote>
-	);
+	renderBlockQuote = ({ children }) => {
+		const { preview } = this.props;
+		if (preview) {
+			return children;
+		}
+		return (
+			<MarkdownBlockQuote>
+				{children}
+			</MarkdownBlockQuote>
+		);
+	}
 
 	renderTable = ({ children, numColumns }) => (
 		<MarkdownTable numColumns={numColumns}>
@@ -309,6 +328,8 @@ export default class Markdown extends PureComponent {
 
 		if (preview) {
 			m = m.split('\n').reduce((lines, line) => `${ lines } ${ line }`, '');
+			const ast = this.parser.parse(m);
+			return this.renderer.render(ast);
 		}
 
 		if (!useMarkdown && !preview) {
@@ -316,8 +337,7 @@ export default class Markdown extends PureComponent {
 		}
 
 		const ast = this.parser.parse(m);
-		const encodedEmojis = toShort(m);
-		this.isMessageContainsOnlyEmoji = isOnlyEmoji(encodedEmojis) && emojiCount(encodedEmojis) <= 3;
+		this.isMessageContainsOnlyEmoji = isOnlyEmoji(m) && emojiCount(m) <= 3;
 
 		this.editedMessage(ast);
 

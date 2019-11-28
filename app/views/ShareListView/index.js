@@ -198,7 +198,13 @@ class ShareListView extends React.Component {
 			const serversCollection = serversDB.collections.get('servers');
 			this.servers = await serversCollection.query().fetch();
 			this.chats = this.data.slice(0, LIMIT);
-			const serverInfo = await serversCollection.find(server);
+			let serverInfo = {};
+			try {
+				serverInfo = await serversCollection.find(server);
+			} catch (error) {
+				// Do nothing
+			}
+
 			const canUploadFileResult = canUploadFile(fileInfo || fileData, serverInfo);
 
 			this.internalSetState({
@@ -285,7 +291,7 @@ class ShareListView extends React.Component {
 		return (
 			<DirectoryItem
 				user={{
-					userId,
+					id: userId,
 					token
 				}}
 				title={this.getRoomTitle(item)}
