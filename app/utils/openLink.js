@@ -1,12 +1,11 @@
-import * as WebBrowser from 'expo-web-browser';
+// import RNUserDefaults from 'rn-user-defaults';
+// import { URL_PREFERENCES_KEY } from '../lib/rocketchat';
+// import openLinkInBrowser from './openLinkInBrowser';
+// import openLinkInWebview from './openLinkInWebview';
 
-import { themes } from '../constants/colors';
+// const openLink = async(url, theme = 'light') => {
+// 	const urlSetting = await RNUserDefaults.get(URL_PREFERENCES_KEY);
+// 	return urlSetting === 'browser' ? openLinkInBrowser(url) : openLinkInWebview(url, theme);
+// };
 
-const openLink = (url, theme = 'light') => WebBrowser.openBrowserAsync(url, {
-	toolbarColor: themes[theme].headerBackground,
-	controlsColor: themes[theme].headerTintColor,
-	collapseToolbar: true,
-	showTitle: true
-});
-
-export default openLink;
+// export default openLink;

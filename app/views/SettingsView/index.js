@@ -160,6 +160,11 @@ class SettingsView extends React.Component {
 		Share.share({ message: isAndroid ? PLAY_MARKET_LINK : APP_STORE_LINK });
 	}
 
+	setUrlSettings = () => {
+		const { navigation } = this.props;
+		navigation.navigate('UrlView');
+	}
+
 	copyServerVersion = () => {
 		const { server } = this.props;
 		this.saveToClipboard(server.version);
@@ -257,6 +262,14 @@ class SettingsView extends React.Component {
 						onPress={() => this.navigateToRoom('LanguageView')}
 						showActionIndicator
 						testID='settings-view-language'
+						right={this.renderDisclosure}
+						theme={theme}
+					/>
+					<Separator theme={theme} />
+					<ListItem
+						title='Url Settings'
+						showActionIndicator
+						onPress={this.setUrlSettings}
 						right={this.renderDisclosure}
 						theme={theme}
 					/>
