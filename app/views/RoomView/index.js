@@ -69,7 +69,7 @@ const stateAttrsUpdate = [
 	'reacting',
 	'showAnnouncementModal'
 ];
-const roomAttrsUpdate = ['f', 'ro', 'blocked', 'blocker', 'archived', 'muted', 'jitsiTimeout', 'announcement', 'sysMes'];
+const roomAttrsUpdate = ['f', 'ro', 'roles', 'blocked', 'blocker', 'archived', 'muted', 'jitsiTimeout', 'announcement', 'sysMes'];
 
 class RoomView extends React.Component {
 	static navigationOptions = ({ navigation, screenProps }) => {
